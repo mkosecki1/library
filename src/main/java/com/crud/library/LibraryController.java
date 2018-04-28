@@ -1,14 +1,24 @@
 package com.crud.library;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
 @RequestMapping("ver1/library")
 @RestController
 public class LibraryController {
-    @RequestMapping(method = RequestMethod.POST, value = "addBook")
-    public void addBook(){
+    @Autowired
+    private BookMapper bookMapper;
+
+    @Autowired
+    private DatabaseService databaseService;
+
+    @RequestMapping(method = RequestMethod.POST, value = "addBook",consumes = APPLICATION_JSON_VALUE)
+    public void addBook(@RequestBody BookDto bookDto){
+
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "deleteBook")
@@ -20,9 +30,9 @@ public class LibraryController {
         return null;
     }
 
-    @RequestMapping()
+    @RequestMapping(method = RequestMethod.GET, value = "getBooks")
     public List<BookDto> getBooks(){
-        return null;
+        return bookMapper.mapToBookDtoList(databaseService.findAllBooks());
     }
 
     @RequestMapping()
