@@ -7,7 +7,7 @@ import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-@RequestMapping("ver1/library")
+@RequestMapping("/ver1/library")
 @RestController
 public class LibraryController {
     @Autowired
@@ -18,16 +18,17 @@ public class LibraryController {
 
     @RequestMapping(method = RequestMethod.POST, value = "addBook",consumes = APPLICATION_JSON_VALUE)
     public void addBook(@RequestBody BookDto bookDto){
-
+        databaseService.saveBook(bookMapper.mapToBook(bookDto));
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "deleteBook")
-    public void deleteBook(){
+    public void deleteBook(@RequestParam Long bookId){
+        databaseService.deleteBook(bookId);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "getBook")
-    public BookDto getBook(){
-        return null;
+    public BookDto getBook(@RequestParam Long bookId) throws BookLackException {
+        return bookMapper.mapToBookDto(databaseService.findBook(bookId).orElseThrow(BookLackException::new));
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "getBooks")
@@ -35,11 +36,8 @@ public class LibraryController {
         return bookMapper.mapToBookDtoList(databaseService.findAllBooks());
     }
 
-    @RequestMapping()
-    public BookDto modificationBook(@RequestBody BookDto bookId){
-        return null;
+    @RequestMapping(method = RequestMethod.PUT, value = "modificationBook")
+    public BookDto modificationBook(@RequestBody BookDto bookDto){
+        return bookMapper.mapToBookDto(databaseService.saveBook(bookMapper.mapToBook(bookDto)));
     }
-
-
-
 }

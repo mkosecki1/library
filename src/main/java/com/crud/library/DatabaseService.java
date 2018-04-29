@@ -11,7 +11,7 @@ public class DatabaseService {
     @Autowired
     private LibraryRepository repository;
 
-    public Book saveBook(Book book){
+    public Book saveBook(final Book book){
         return repository.save(book);
     }
 
